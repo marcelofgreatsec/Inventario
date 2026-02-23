@@ -1,0 +1,362 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 2.5rem;
+    background: transparent;
+    min-height: 100vh;
+}
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.greeting {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.greetTitle {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+}
+
+.greetSub {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpiCard {
+    background: var(--surface-1);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.kpiCard:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-secondary);
+}
+
+.kpiCard::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--accent-primary);
+    opacity: 0.3;
+}
+
+.kpiCard.success::after {
+    background: var(--accent-success);
+    opacity: 0.6;
+}
+
+.kpiCard.warning::after {
+    background: var(--accent-warning);
+    opacity: 0.6;
+}
+
+.kpiCard.danger::after {
+    background: var(--accent-danger);
+    opacity: 0.6;
+}
+
+.kpiHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kpiTitle {
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.kpiIcon {
+    color: var(--accent-primary);
+    opacity: 0.8;
+}
+
+.kpiValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.kpiTrend {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    width: fit-content;
+}
+
+.chartCard {
+    background: var(--surface-1);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-smooth);
+}
+
+.chartCard:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-secondary);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface-2);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.filterSelect {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.35rem 0.25rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    outline: none;
+    appearance: none;
+}
+
+.filterSelect option {
+    background: var(--surface-2);
+    color: var(--text-primary);
+}
+
+.refreshBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+
+.refreshBtn:hover {
+    color: var(--accent-primary);
+}
+
+.cardTitleWrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cardTitle {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.row2,
+.row3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.row2> :first-child {
+    grid-column: span 2;
+}
+
+.heatmap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 1.5rem 0;
+}
+
+.heatmapHours {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 0.75rem;
+}
+
+.heatmapRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.heatmapDay {
+    width: 3rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.heatmapCell {
+    flex: 1;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    transition: var(--transition-smooth);
+}
+
+.heatmapCell:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
+}
+
+.alertsCard {
+    border-left: 4px solid var(--accent-danger);
+}
+
+.alertList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.alertItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.alertItem:hover {
+    transform: translateX(4px);
+}
+
+.row4 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background: var(--surface-1);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.infraGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+
+.infraItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition-smooth);
+}
+
+.infraItem:hover {
+    background: var(--surface-2);
+}
+
+.infraIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.infraValue {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.infraLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+@media (max-width: 1400px) {
+
+    .row2,
+    .row3 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .row2> :first-child {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 1024px) {
+
+    .row2,
+    .row3 {
+        grid-template-columns: 1fr;
+    }
+
+    .row2> :first-child {
+        grid-column: span 1;
+    }
+}

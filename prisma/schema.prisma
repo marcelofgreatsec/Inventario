@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  password  String
+  role      String   @default("VIEWER") // ADMIN, TI, VIEWER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  logs      AuditLog[]
+}
+
+model Asset {
+  id          String         @id
+  name        String
+  type        String
+  location    String
+  status      String         @default("Ativo") // Ativo, Manutenção, Desativado
+  ip          String?
+  documents   String?        // JSON stringified list of document links
+  history     AssetHistory[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model AssetHistory {
+  id        String   @id @default(cuid())
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+}
+
+model BackupRoutine {
+  id          String      @id @default(cuid())
+  name        String
+  type        String      // Nuvem, Local, Híbrido
+  frequency   String
+  status      String      @default("Pendente") // Sucesso, Erro, Pendente
+  responsible String
+  lastRun     DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  logs        BackupLog[]
+}
+
+model BackupLog {
+  id        String        @id @default(cuid())
+  routineId String
+  routine   BackupRoutine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  status    String
+  evidence  String?       // Link to evidence file or text
+  logOutput String?
+  timestamp DateTime      @default(now())
+}
+
+model Diagram {
+  id        String   @id @default(cuid())
+  name      String
+  data      String   // JSON stringified Konva stage state
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  resource  String
+  timestamp DateTime @default(now())
+}
+
+// ── Documentation Module ─────────────────────────────────────────────────
+
+model DocCategory {
+  id        String     @id @default(cuid())
+  name      String
+  icon      String     @default("folder")
+  createdAt DateTime   @default(now())
+  docs      Document[]
+}
+
+model Document {
+  id           String       @id @default(cuid())
+  title        String
+  categoryId   String
+  category     DocCategory  @relation(fields: [categoryId], references: [id])
+  type         String       // Documento, Link, Credencial, Procedimento
+  description  String?
+  tags         String?      // comma-separated
+  content      String?      // URL for Link, text content for others
+  fileUrl      String?      // path to uploaded file
+  fileType     String?      // pdf, docx, txt
+  // Credential fields
+  credUser     String?
+  credPass     String?      // bcrypt encrypted
+  responsible  String?
+  createdBy    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  accessLogs   DocAccessLog[]
+}
+
+model DocAccessLog {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String?
+  action     String   // VIEW, EDIT, DELETE, VIEW_CREDENTIAL
+  timestamp  DateTime @default(now())
+}

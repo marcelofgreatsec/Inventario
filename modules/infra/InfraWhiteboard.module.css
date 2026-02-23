@@ -1,0 +1,167 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--navbar-height) - 5rem);
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    color: var(--text-tertiary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.actionBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--surface-1);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    transition: var(--transition-smooth);
+}
+
+.actionBtn:hover {
+    background: var(--surface-2);
+    color: var(--text-primary);
+}
+
+.actionBtn.primary {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+.actionBtn.primary:hover {
+    filter: brightness(1.2);
+}
+
+.workspace {
+    flex: 1;
+    display: flex;
+    gap: 1.5rem;
+    min-height: 0;
+}
+
+.sideToolbar {
+    width: 64px;
+    background: rgba(var(--surface-1), 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 1rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.toolGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tool {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: var(--text-tertiary);
+    transition: var(--transition-smooth);
+}
+
+.tool:hover {
+    background: var(--surface-2);
+    color: var(--text-primary);
+}
+
+.toolActive {
+    background: var(--accent-primary);
+    color: white !important;
+    box-shadow: 0 0 15px rgba(0, 112, 209, 0.4);
+}
+
+.divider {
+    width: 32px;
+    height: 1px;
+    background: var(--border-primary);
+}
+
+.canvasContainer {
+    flex: 1;
+    background: var(--surface-1);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-inner);
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+.canvasContainer[data-tool="hand"] {
+    cursor: grab;
+}
+
+.canvasContainer[data-tool="hand"]:active {
+    cursor: grabbing;
+}
+
+.canvasContainer[data-tool="arrow"] {
+    cursor: crosshair;
+}
+
+.canvasContainer[data-tool="select"] {
+    cursor: default;
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-tertiary);
+    gap: 1rem;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
