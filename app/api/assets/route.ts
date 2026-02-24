@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET() {
     try {
@@ -16,8 +15,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role === 'VIEWER') {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || user.user_metadata?.role === 'VIEWER') {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         // Log the audit
         await prisma.auditLog.create({
             data: {
-                userId: (session.user as any).id,
+                userId: user.id,
                 action: 'CREATE_ASSET',
                 resource: id,
             }

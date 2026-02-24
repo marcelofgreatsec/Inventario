@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import {
     LayoutDashboard,
     Box,
@@ -11,7 +12,8 @@ import {
     Settings,
     BookOpen,
     ChevronRight,
-    LogOut
+    LogOut,
+    Key
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -19,6 +21,7 @@ const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, href: '/' },
     { name: 'Inventário', icon: Box, href: '/inventario' },
     { name: 'Backups', icon: Database, href: '/backups' },
+    { name: 'Licenças', icon: Key, href: '/licencas' },
     { name: 'Infraestrutura', icon: Share2, href: '/infraestrutura' },
     { name: 'Documentações', icon: BookOpen, href: '/documentacoes' },
     { name: 'Administração', icon: Settings, href: '/administracao' },
@@ -26,8 +29,28 @@ const navItems = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { data: session } = useSession();
-    const user = session?.user as any;
+    const router = useRouter();
+    const supabase = createClient();
+    const [user, setUser] = useState<{ name?: string; email?: string; role?: string } | null>(null);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user: sbUser } } = await supabase.auth.getUser();
+            if (sbUser) {
+                setUser({
+                    name: sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0],
+                    email: sbUser.email,
+                    role: sbUser.user_metadata?.role || 'Usuário',
+                });
+            }
+        };
+        getUser();
+    }, []);
+
+    const handleSignOut = async () => {
+        await supabase.auth.signOut();
+        router.push('/login');
+    };
 
     return (
         <aside className={styles.sidebar}>
@@ -69,7 +92,7 @@ export default function Sidebar() {
                 </div>
                 <button
                     className={styles.logoutBtn}
-                    onClick={() => signOut({ callbackUrl: '/login' })}
+                    onClick={handleSignOut}
                 >
                     <LogOut size={18} />
                 </button>

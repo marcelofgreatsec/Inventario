@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/server';
 import bcrypt from 'bcryptjs';
 
 export async function GET(req: Request) {
@@ -37,8 +36,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || !['ADMIN', 'TI'].includes((session.user as any).role)) {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || !['ADMIN', 'TI'].includes(user.user_metadata?.role)) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
@@ -61,13 +61,13 @@ export async function POST(req: Request) {
                 credUser: credUser || null,
                 credPass: encryptedPass || null,
                 responsible: responsible || null,
-                createdBy: (session.user as any).id,
+                createdBy: user.id,
             },
             include: { category: true },
         });
 
         await prisma.docAccessLog.create({
-            data: { documentId: doc.id, userId: (session.user as any).id, action: 'CREATE' },
+            data: { documentId: doc.id, userId: user.id, action: 'CREATE' },
         });
 
         return NextResponse.json({ ...doc, credPass: doc.credPass ? '••••••••' : null });

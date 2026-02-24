@@ -80,6 +80,24 @@ model AuditLog {
   timestamp DateTime @default(now())
 }
 
+// ── License Management Module ─────────────────────────────────────────────
+
+model License {
+  id           String   @id @default(cuid())
+  name         String
+  provider     String
+  key          String?  // Encrypted or sensitive
+  totalSeats   Int      @default(1)
+  usedSeats    Int      @default(0)
+  monthlyCost  Float    @default(0.0)
+  renewalDate  DateTime?
+  status       String   @default("Ativo") // Ativo, Expirado, Cancelado
+  responsible  String?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 // ── Documentation Module ─────────────────────────────────────────────────
 
 model DocCategory {

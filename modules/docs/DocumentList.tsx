@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import useSWR from 'swr';
-import { useSession } from 'next-auth/react';
+import { createClient } from '@/lib/supabase/client';
 import {
     Folder, FolderPlus, Edit2, Trash2, ChevronRight,
     Wifi, Server, Database, Shield, HardDrive, Archive,
@@ -89,8 +89,14 @@ function CredentialBadge({ docId }: { docId: string }) {
 }
 
 export default function DocumentList() {
-    const { data: session } = useSession();
-    const role = (session?.user as any)?.role;
+    const supabase = createClient();
+    const [role, setRole] = useState<string>('');
+
+    useEffect(() => {
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) setRole(user.user_metadata?.role || 'Usuário');
+        });
+    }, []);
 
     const { data: categories, mutate: mutCats } = useSWR('/api/docs/categories', fetcher);
     const safeCategories = Array.isArray(categories) ? categories : [];

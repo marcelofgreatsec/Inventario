@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== 'ADMIN') {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || user.user_metadata?.role !== 'ADMIN') {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
