@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -13,7 +13,7 @@ export async function POST(
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         const { status, evidence, logOutput } = await req.json();
 
         const log = await prisma.backupLog.create({
@@ -41,10 +41,10 @@ export async function POST(
 
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const logs = await prisma.backupLog.findMany({
             where: { routineId: id },
             orderBy: { timestamp: 'desc' },
