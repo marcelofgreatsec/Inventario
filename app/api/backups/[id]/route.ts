@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 
@@ -11,8 +11,8 @@ import { createClient } from '@/lib/supabase/server';
  * Note: Next.js 15+ requires 'params' to be awaited.
  */
 export async function DELETE(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -27,7 +27,7 @@ export async function DELETE(
         }
 
         // Await params for Next.js 15+ compatibility
-        const { id } = await params;
+        const { id } = await context.params;
 
         if (!id) {
             return NextResponse.json(

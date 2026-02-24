@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 
 export async function PUT(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -13,7 +13,7 @@ export async function PUT(
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
-        const { id } = await params;
+        const { id } = await context.params;
         const body = await req.json();
         const { name, type, location, status, ip } = body;
 
@@ -42,8 +42,8 @@ export async function PUT(
 }
 
 export async function DELETE(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -52,7 +52,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'Apenas administradores podem excluir ativos' }, { status: 403 });
         }
 
-        const { id } = await params;
+        const { id } = await context.params;
         await prisma.asset.delete({ where: { id } });
 
         return NextResponse.json({ message: 'Ativo excluído com sucesso' });

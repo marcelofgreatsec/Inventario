@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 
@@ -7,8 +7,8 @@ import { createClient } from '@/lib/supabase/server';
  * Update a specific license.
  */
 export async function PATCH(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -17,7 +17,7 @@ export async function PATCH(
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
-        const { id } = await params;
+        const { id } = await context.params;
         const body = await req.json();
 
         const updateData: any = { ...body };
@@ -42,8 +42,8 @@ export async function PATCH(
  * Delete a specific license.
  */
 export async function DELETE(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient();
@@ -52,7 +52,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 
-        const { id } = await params;
+        const { id } = await context.params;
 
         await prisma.license.delete({
             where: { id }
