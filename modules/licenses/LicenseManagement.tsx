@@ -126,6 +126,7 @@ export default function LicenseManagement() {
                                 <th className={styles.th}>Software/Provedor</th>
                                 <th className={styles.th}>Uso/Assentos</th>
                                 <th className={styles.th}>Custo Mensal</th>
+                                <th className={styles.th}>Renovação</th>
                                 <th className={styles.th}>Status</th>
                                 <th className={styles.th}>Responsável</th>
                                 <th className={styles.th}>Ações</th>
@@ -153,6 +154,9 @@ export default function LicenseManagement() {
                                     </td>
                                     <td className={styles.td}>
                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(license.monthlyCost)}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {license.renewalDate ? new Date(license.renewalDate).toLocaleDateString('pt-BR') : 'N/A'}
                                     </td>
                                     <td className={styles.td}>
                                         <span className={`${styles.statusBadge} ${license.status === 'Ativo' ? styles.statusActive : styles.statusDisabled

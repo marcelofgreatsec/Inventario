@@ -22,6 +22,7 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
             monthlyCost: 0,
             status: 'Ativo',
             responsible: '',
+            renewalDate: '',
             notes: ''
         }
     });
@@ -40,8 +41,14 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
             });
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.error || 'Falha ao salvar licença');
+                let errorMessage = 'Falha ao salvar licença';
+                try {
+                    const errorData = await res.json();
+                    errorMessage = errorData.error || errorMessage;
+                } catch (e) {
+                    errorMessage = `Erro do servidor (${res.status}): ${res.statusText}`;
+                }
+                throw new Error(errorMessage);
             }
 
             showToast(`Licença "${data.name}" ${license ? 'atualizada' : 'registrada'} com sucesso!`, 'success');
@@ -101,14 +108,20 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
                         </div>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>Chave de Ativação (Opcional)</label>
-                        <input {...register('key')} className={styles.input} placeholder="ID ou Serial" />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Responsável</label>
+                            <input {...register('responsible')} className={styles.input} placeholder="Nome do gestor" />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Data de Renovação</label>
+                            <input type="date" {...register('renewalDate')} className={styles.input} />
+                        </div>
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>Responsável</label>
-                        <input {...register('responsible')} className={styles.input} placeholder="Nome do gestor" />
+                        <label className={styles.label}>Notas/Observações</label>
+                        <textarea {...register('notes')} className={styles.input} rows={2} placeholder="Detalhes adicionais..." style={{ resize: 'vertical' }} />
                     </div>
 
                     <div className={styles.modalFooter}>
