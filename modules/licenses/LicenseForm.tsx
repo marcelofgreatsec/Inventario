@@ -44,7 +44,9 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
                 let errorMessage = 'Falha ao salvar licença';
                 try {
                     const errorData = await res.json();
-                    errorMessage = errorData.error || errorMessage;
+                    errorMessage = errorData.details
+                        ? `${errorData.error}: ${errorData.details}`
+                        : (errorData.error || errorMessage);
                 } catch (e) {
                     errorMessage = `Erro do servidor (${res.status}): ${res.statusText}`;
                 }
