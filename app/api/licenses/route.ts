@@ -29,13 +29,6 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Sessão expirada ou não encontrada' }, { status: 401 });
         }
 
-        const userRole = user.user_metadata?.role;
-        if (!['ADMIN', 'TI'].includes(userRole)) {
-            return NextResponse.json({
-                error: `Não autorizado. Sua função (${userRole || 'Padrão'}) não tem permissão para criar licenças.`
-            }, { status: 403 });
-        }
-
         const body = await req.json();
         console.log('[LICENSE_POST_BODY]', body);
         const { name, provider, key, totalSeats, usedSeats, monthlyCost, renewalDate, status, responsible, notes } = body;
