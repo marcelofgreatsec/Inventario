@@ -37,26 +37,42 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
+        console.log('[LICENSE_POST_BODY]', body);
         const { name, provider, key, totalSeats, usedSeats, monthlyCost, renewalDate, status, responsible, notes } = body;
+
+        if (!name || !provider) {
+            return NextResponse.json({ error: 'Nome e Provedor são campos obrigatórios' }, { status: 400 });
+        }
+
+        let parsedRenewalDate: Date | null = null;
+        if (renewalDate) {
+            parsedRenewalDate = new Date(renewalDate);
+            if (isNaN(parsedRenewalDate.getTime())) {
+                return NextResponse.json({ error: 'Data de renovação inválida' }, { status: 400 });
+            }
+        }
 
         const license = await prisma.license.create({
             data: {
                 name,
                 provider,
                 key,
-                totalSeats: parseInt(totalSeats) || 1,
-                usedSeats: parseInt(usedSeats) || 0,
-                monthlyCost: parseFloat(monthlyCost) || 0.0,
-                renewalDate: renewalDate ? new Date(renewalDate) : null,
+                totalSeats: parseInt(totalSeats as string) || 1,
+                usedSeats: parseInt(usedSeats as string) || 0,
+                monthlyCost: parseFloat(monthlyCost as string) || 0.0,
+                renewalDate: parsedRenewalDate,
                 status: status || 'Ativo',
-                responsible,
-                notes
+                responsible: responsible || null,
+                notes: notes || null
             }
         });
 
         return NextResponse.json(license);
-    } catch (error) {
-        console.error('[LICENSE_CREATE_ERROR]', error);
-        return NextResponse.json({ error: 'Erro ao criar licença' }, { status: 500 });
+    } catch (error: any) {
+        console.error('[LICENSE_CREATE_ERROR] Full error:', error);
+        return NextResponse.json({
+            error: 'Erro no servidor ao criar licença',
+            details: error?.message || String(error)
+        }, { status: 500 });
     }
 }
