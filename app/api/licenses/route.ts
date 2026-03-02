@@ -25,8 +25,15 @@ export async function POST(req: Request) {
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user || !['ADMIN', 'TI'].includes(user.user_metadata?.role)) {
-            return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+        if (!user) {
+            return NextResponse.json({ error: 'Sessão expirada ou não encontrada' }, { status: 401 });
+        }
+
+        const userRole = user.user_metadata?.role;
+        if (!['ADMIN', 'TI'].includes(userRole)) {
+            return NextResponse.json({
+                error: `Não autorizado. Sua função (${userRole || 'Padrão'}) não tem permissão para criar licenças.`
+            }, { status: 403 });
         }
 
         const body = await req.json();

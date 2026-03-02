@@ -12,7 +12,7 @@ interface LicenseFormProps {
 }
 
 export default function LicenseForm({ license, onClose, onSuccess }: LicenseFormProps) {
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+    const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm({
         defaultValues: license || {
             name: '',
             provider: '',
@@ -39,7 +39,10 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
                 body: JSON.stringify(data),
             });
 
-            if (!res.ok) throw new Error('Falha ao salvar licença');
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Falha ao salvar licença');
+            }
 
             showToast(`Licença "${data.name}" ${license ? 'atualizada' : 'registrada'} com sucesso!`, 'success');
             onSuccess();
@@ -62,12 +65,14 @@ export default function LicenseForm({ license, onClose, onSuccess }: LicenseForm
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.formGrid}>
                     <div className={styles.formGroup}>
                         <label className={styles.label}>Nome da Software/Serviço</label>
-                        <input {...register('name', { required: true })} className={styles.input} placeholder="Ex: Adobe Creative Cloud" />
+                        <input {...register('name', { required: 'Nome é obrigatório' })} className={styles.input} placeholder="Ex: Adobe Creative Cloud" />
+                        {errors.name && <span className={styles.fieldError}>{(errors.name as any).message}</span>}
                     </div>
 
                     <div className={styles.formGroup}>
                         <label className={styles.label}>Provedor/Vendedor</label>
-                        <input {...register('provider', { required: true })} className={styles.input} placeholder="Ex: Adobe Inc." />
+                        <input {...register('provider', { required: 'Provedor é obrigatório' })} className={styles.input} placeholder="Ex: Adobe Inc." />
+                        {errors.provider && <span className={styles.fieldError}>{(errors.provider as any).message}</span>}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

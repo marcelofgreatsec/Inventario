@@ -13,8 +13,15 @@ export async function PATCH(
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user || !['ADMIN', 'TI'].includes(user.user_metadata?.role)) {
-            return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+        if (!user) {
+            return NextResponse.json({ error: 'Sessão expirada' }, { status: 401 });
+        }
+
+        const userRole = user.user_metadata?.role;
+        if (!['ADMIN', 'TI'].includes(userRole)) {
+            return NextResponse.json({
+                error: `Não autorizado. Sua função (${userRole || 'Padrão'}) não tem permissão para esta ação.`
+            }, { status: 403 });
         }
 
         const { id } = await context.params;
@@ -48,8 +55,15 @@ export async function DELETE(
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user || !['ADMIN', 'TI'].includes(user.user_metadata?.role)) {
-            return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+        if (!user) {
+            return NextResponse.json({ error: 'Sessão expirada' }, { status: 401 });
+        }
+
+        const userRole = user.user_metadata?.role;
+        if (!['ADMIN', 'TI'].includes(userRole)) {
+            return NextResponse.json({
+                error: `Não autorizado. Sua função (${userRole || 'Padrão'}) não tem permissão para esta ação.`
+            }, { status: 403 });
         }
 
         const { id } = await context.params;
