@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
         const { id } = await context.params;
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user || !['ADMIN', 'TI'].includes(user.user_metadata?.role)) {
+        if (!user) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
         }
 

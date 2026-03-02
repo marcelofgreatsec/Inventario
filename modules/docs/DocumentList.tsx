@@ -141,7 +141,7 @@ export default function DocumentList() {
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
                     <h3 className={styles.sidebarTitle}>Categorias</h3>
-                    {['ADMIN', 'TI'].includes(role) && (
+                    {role && (
                         <button className={styles.iconBtn} onClick={() => setCatFormOpen(true)} title="Nova categoria">
                             <Plus size={18} />
                         </button>
@@ -193,9 +193,9 @@ export default function DocumentList() {
                             <option key={t}>{t}</option>
                         ))}
                     </select>
-                    {['ADMIN', 'TI'].includes(role) && (
+                    {role && (
                         <button className={styles.btnPrimary} onClick={() => { setEditDoc(null); setFormOpen(true); }}>
-                            <Plus size={18} /> Novo Passo-a-Passo
+                            <Plus size={18} /> Novo Documento
                         </button>
                     )}
                 </div>
@@ -210,7 +210,7 @@ export default function DocumentList() {
                         <AlignLeft size={48} />
                         <span>Sua base de conhecimento está pronta.</span>
                         <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>Adicione guias internos e manuais de operação aqui.</p>
-                        {['ADMIN', 'TI'].includes(role) && (
+                        {role && (
                             <button className={styles.btnPrimary} onClick={() => { setEditDoc(null); setFormOpen(true); }}>
                                 <Plus size={18} /> Criar Primeiro Guia
                             </button>
