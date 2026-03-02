@@ -57,7 +57,18 @@ export default function AssetForm({ onClose, onSuccess, initialData }: AssetForm
                 body: JSON.stringify(data),
             });
 
-            if (!res.ok) throw new Error('Falha ao salvar ativo');
+            if (!res.ok) {
+                let errorMessage = 'Falha ao salvar ativo';
+                try {
+                    const errorData = await res.json();
+                    errorMessage = errorData.details
+                        ? `${errorData.error}: ${errorData.details}`
+                        : (errorData.error || errorMessage);
+                } catch (e) {
+                    errorMessage = `Erro do servidor (${res.status}): ${res.statusText}`;
+                }
+                throw new Error(errorMessage);
+            }
 
             onSuccess();
             onClose();
